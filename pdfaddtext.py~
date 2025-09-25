@@ -1,0 +1,59 @@
+"""
+Takes a pdf file and add text to it on every page at the given position
+"""
+import os
+
+def pdfaddtext(pdf='',            # pdf filename
+               s='',              # Text to add to pdf
+               dest=None,         # example: "out". Will give "out.tex" and "out.pdf"
+               position='1,1', # note that (0,0) is lower left corner. For page number on lower right, use '20.5, 1'
+               lower_left=False,
+               lower_right=True,
+               pages='-',
+               clean=True):
+
+    if lower_left:
+        position = '1.1,1'
+    elif lower_right:
+        position = '20.5,1'
+
+    if not pdf.endswith('.pdf'):
+        raise ValueError("ERROR: %s does not end with .pdf" % pdf)
+    if not os.path.exists(pdf):
+        raise ValueError("ERROR: %s not found" % pdf)
+
+    if dest == None:
+        dest = pdf.replace('.pdf', '')
+    if dest.endswith('.pdf'):
+        print "WARNING:", dest, "ends with .pdf"
+
+    latex = r'''
+\input{mynothingpreamble}
+\usepackage{pdfpages}
+
+\begin{document}
+
+\newcommand\superposition[1]{
+  \begin{tikzpicture}[overlay,remember picture,
+    shift={(current page.south west)}]
+    \node at (%(position)s) {%(s)s};
+  \end{tikzpicture}
+}
+
+\includepdf[pages=%(pages)s,fitpaper=true,pagecommand={\superposition}]{%(pdf)s}
+
+\end{document}
+''' % {'pages':pages, 'position':position, 's':s, 'pdf':pdf}
+    file('tmp.tex', 'w').write(latex)
+    os.system('pdflatex tmp.tex >/dev/null')
+    os.system('pdflatex tmp.tex >/dev/null')
+    os.system('mv "tmp.pdf" "%s.pdf"' % dest)
+    print ">>>>> see %s.tex" % dest
+    print ">>>>> see %s.pdf" % dest
+    #if clean:
+    #    os.system('rm %s.tex' % dest)
+    os.system('rm *.log *.aux *.out *.idx')
+    return "%s.pdf" % dest
+
+if __name__ == '__main__':
+    pdfaddtext('blank.pdf',dest='main2', s='FOO-BAR')

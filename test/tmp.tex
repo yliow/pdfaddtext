@@ -1,0 +1,17 @@
+
+\documentclass{article}
+\pagestyle{empty}
+\usepackage{tikz}
+\usepackage{pdfpages}
+\begin{document}
+
+\newcommand\superposition[1]{
+  \begin{tikzpicture}[overlay,remember picture,
+    shift={(current page.south west)}]
+    \node at (20.5,1) {999};
+  \end{tikzpicture}
+}
+
+\includepdf[pages=-,fitpaper=true,pagecommand={\superposition}]{blank.pdf}
+
+\end{document}

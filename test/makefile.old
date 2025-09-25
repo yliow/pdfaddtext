@@ -1,0 +1,3 @@
+pdf:
+	python test.py
+	gnome-open pdfaddtext.pdf

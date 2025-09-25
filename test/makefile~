@@ -1,0 +1,4 @@
+pdf:
+	rm -f pdfaddtext.pdf
+	python test.py
+	o pdfaddtext.pdf

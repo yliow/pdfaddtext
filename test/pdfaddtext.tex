@@ -1,0 +1,9 @@
+
+\input{myblankpreamble}
+\usepackage{pdfpages}
+
+\begin{document}
+
+\includepdf[pages=-,pagecommand={\begin{tikzpicture}[remember picture, overlay]\node[anchor=west] at (17,-26) {999};\end{tikzpicture}}]{blank.pdf}
+
+\end{document}
